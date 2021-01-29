@@ -1,13 +1,6 @@
+Red []
 
-Red [
-    Title:   "Help Writer"
-	Author:  ["Greg Tewalt"]
-    File: %help-writer.red
-    Usage: {
-        /red help-writer.red function! asciidoc
-        /red help-writer.red native! markdown
-    }
-]
+; #include %<your-path>/Help-Writer/help.red       ;  to compile
 
 opts: to block! trim/with system/script/args #"'"  ; multiple args are a weird string format, we need words in a block
 
