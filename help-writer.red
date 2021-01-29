@@ -1,7 +1,7 @@
 
 Red [
     Title:   "Help Writer"
-	Author:  ["Greg Tewalt"]
+    Author:  ["Greg Tewalt"]
     File: %help-writer.red
     Usage: {
         /red help-writer.red function! asciidoc
