@@ -12,6 +12,8 @@ From the Red language help system.
 ./red help-writer.red function! asciidoc
 
 ./red help-writer.red action! markdown
+
+./red help-writer.red -a markdown
 ```
 
 * Compiled (TBD)
@@ -19,5 +21,5 @@ From the Red language help system.
 ```
 ./help-writer native! asciidoc
 
-./help-writer/all markdown
+./help-writer -a markdown
 ```
