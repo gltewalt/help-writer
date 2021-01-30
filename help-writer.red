@@ -41,18 +41,16 @@ asciidoc: ["===" space n crlf "[source, red]" crlf "----" crlf help-string (to-w
 markdown: ["###" space n crlf "```red" crlf help-string (to-word :n) crlf "```"]
 html:     [] 
 
-write-help: func [template [block!] /local dest ext][
-    ; remove ! from any-function word, pluralize it with 's', combine with template word to create dir name
-    ; (TODO) or remove -a from opts/1, replace it with "all"  example: all-markdown
-    dest: make-dir to-file rejoin compose [(replace mold opts/1 "!" "s") '- opts/2] 
+write-help: func [template [block!] /local ext][
     ext: case [
         template = asciidoc ['.adoc]
         template = markdown ['.md]
         template = html     ['.html]
     ]
     foreach n fnames [
-        if system/platform = 'Windows [parse n [some [change #"?" "_q" | change #"*" "_asx" | skip]]] ; windows no like ? and *
-        write to-file rejoin [dest n ext] rejoin compose template
+        ; may not work - windows doesn't like ? and * in dir names
+        if system/platform = 'Windows [parse n [some [change #"?" "_q" | change #"*" "_asx" | skip]]] 
+        either n = "is" [continue][write to-file rejoin [dest n ext] rejoin compose template]  ; can't write 'is' to file
     ] 
 ]
 
@@ -60,6 +58,8 @@ main-all: does [
     either all [contains? valid-template opts/2 2 = length? opts][
         foreach f valid-func [
             gather-function-names get-fc-text :f 
+            ; remove -a from opts/1, replace it with function category 
+            dest: make-dir to-file rejoin compose [(replace mold opts/1 "-a" f) '- opts/2] 
             write-help reduce opts/2
         ]
     ][print all-usage exit]
@@ -73,9 +73,10 @@ main: does [
                 2 = length? opts
                 ][
                     gather-function-names get-fc-text :opts/1
+                    ; remove ! from any-function word, pluralize it with 's', combine with template word to create dir name
+                    dest: make-dir to-file rejoin compose [(replace mold opts/1 "!" "s") '- opts/2] 
                     write-help reduce opts/2][print usage exit]
     ]
 ]
-    
 
-main
+main 
