@@ -1,7 +1,8 @@
 Red [
     Title:   ["Help Writer"]
-    Author:  ["Greg Tewalt"]
-    File: %help-writer.red
+    Author:  ["Joey Jo-Jo Jr. Shabadoo"]
+    File:    %help-writer.red
+    License: 'MIT
     Usage: {
         /red help-writer.red function! asciidoc
         /red help-writer.red native! markdown
