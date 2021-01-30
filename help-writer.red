@@ -25,8 +25,7 @@ contains?: func [thing [block!] value [word!]][
 ]
 ;---------------------------------------------------------------------------------------------------------------------------
 
-;function category text: action!, function!, native!, op!, routine!
-get-fc-text: func [w [word!]][help-string :w]
+get-help-text: func [w][help-string :w]
 
 gather-function-names: func [txt] [
     ws: charset reduce [space tab cr lf]
@@ -34,7 +33,6 @@ gather-function-names: func [txt] [
     rule: [s: collect into fnames any [ahead [any ws "=>" e:] b: keep (copy/part s b) :e | ws s: | skip]] ; rule by toomasv
     parse txt rule  ; grab all function names and put them in fnames block to loop through
 ]
-
 
 ; templates
 asciidoc: ["===" space n crlf "[source, red]" crlf "----" crlf help-string (to-word :n) crlf "----"]
@@ -50,14 +48,15 @@ write-help: func [template [block!] /local ext][
     foreach n fnames [
         ; may not work - windows doesn't like ? and * in dir names
         if system/platform = 'Windows [parse n [some [change #"?" "_q" | change #"*" "_asx" | skip]]] 
-        either n = "is" [continue][write to-file rejoin [dest n ext] rejoin compose template]  ; can't write 'is' to file
+        either n = "is" [continue][write to-file rejoin [dest n ext] rejoin compose template]  ; can't write 'is' op! to file
+        write to-file rejoin [dest n ext] rejoin compose template
     ] 
 ]
 
 main-all: does [
     either all [contains? valid-template opts/2 2 = length? opts][
         foreach f valid-func [
-            gather-function-names get-fc-text :f 
+            gather-function-names get-help-text :f 
             ; remove -a from opts/1, replace it with function category 
             dest: make-dir to-file rejoin compose [(replace mold opts/1 "-a" f) '- opts/2] 
             write-help reduce opts/2
@@ -72,7 +71,7 @@ main: does [
                 contains? valid-template opts/2
                 2 = length? opts
                 ][
-                    gather-function-names get-fc-text :opts/1
+                    gather-function-names get-help-text :opts/1
                     ; remove ! from any-function word, pluralize it with 's', combine with template word to create dir name
                     dest: make-dir to-file rejoin compose [(replace mold opts/1 "!" "s") '- opts/2] 
                     write-help reduce opts/2][print usage exit]
