@@ -16,7 +16,7 @@ From the Red language help system.
 ./red help-writer.red -a markdown
 ```
 
-* Compiled (TBD)
+* Compiled 
 
 ```
 ./help-writer native! asciidoc
