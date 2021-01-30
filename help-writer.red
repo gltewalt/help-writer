@@ -47,11 +47,14 @@ write-help: func [template [block!] /local ext][
         template = html     ['.html]
     ]
     foreach n fnames [
-        ; may not work - windows doesn't like ? and * in dir names
-        if system/platform = 'Windows [parse n [some [change #"?" "_q" | change #"*" "_asx" | skip]]] 
-        either n = "is" [continue][write to-file rejoin [dest n ext] rejoin compose template]  ; can't write 'is' op! to file
-        write to-file rejoin [dest n ext] rejoin compose template
-    ] 
+        either system/platform = 'Windows [
+            f: copy n
+            parse f [some [change #"?" "_q" | change #"*" "_asx" | skip]] 
+            either f = "is" [continue][write to-file rejoin [dest f ext] rejoin compose template] 
+        ][
+            either n = "is" [continue][write to-file rejoin [dest n ext] rejoin compose template]
+        ]
+    ]
 ]
 
 main-all: does [
