@@ -47,7 +47,7 @@ write-help: func [template [block!] /local ext][
         template = html     ['.html]
     ]
     foreach n fnames [
-        either system/platform = 'Windows [
+        either system/platform = 'Windows [  ; windows doesn't like * or ? in dir names
             f: copy n
             parse f [some [change #"?" "_q" | change #"*" "_asx" | skip]] 
             either f = "is" [continue][write to-file rejoin [dest f ext] rejoin compose template] 
