@@ -6,7 +6,6 @@ usage: ["Usage:" crlf "./help-writer <function> <template>" crlf "./help-writer 
 
 args: system/script/args 
 options: to block! trim/with args #"'" 
-
 valid-funcs: [action! function! native! op! routine!]
 
 function-name-rule: ["action!" | "function!" | "native!" | "op!" | "routine!"]
@@ -18,14 +17,14 @@ asciidoc: ["===" space n crlf "[source, red]" crlf "----" crlf help-string (to-w
 latex:    ["\documentclass {article} \title{" n "} \begin{document}" help-string (to-word :n) "\end{document}"]
 markdown: ["###" space n crlf "```red" crlf help-string (to-word :n) crlf "```"]
 
-get-help-text: func [w][help-string :w]
-
 gather-function-names: func [txt] [
     ws: charset reduce [space tab cr lf]
     fnames: copy []
     rule: [s: collect into fnames any [ahead [any ws "=>" e:] b: keep (copy/part s b) :e | ws s: | skip]] ; rule by toomasv
     parse txt rule  ; grab all function names and put them in fnames block to loop through
 ]
+
+get-help-text: func [w][help-string :w]
 
 write-help: func [template [block!] /local ext][
     ext: case [
@@ -46,7 +45,7 @@ write-help: func [template [block!] /local ext][
 
 do-all: does [
     foreach f valid-funcs [
-        dest: make-dir to-file rejoin compose [(replace mold options/1 "-a" f) '- options/2] ; fix for --all
+        dest: make-dir to-file rejoin compose [(replace x: trim/with mold options/1 "-l" x f) '- options/2] 
         gather-function-names get-help-text :f 
         write-help reduce options/2
     ]
