@@ -33,7 +33,7 @@ write-help: func [template [block!] /local ext][
         template = latex    ['.tex]
     ]
     foreach n fnames [
-        either system/platform = 'Windows [  ; windows doesn't like * or ? in dir names
+        either system/platform = 'Windows [  ; windows doesn't like * or ? in names
             f: copy n
             parse f [some [change #"?" "_q" | change #"*" "_asx" | skip]] 
             either f = "is" [continue][write to-file rejoin [dest f ext] rejoin compose template] ; can't write 'is'
@@ -45,14 +45,14 @@ write-help: func [template [block!] /local ext][
 
 do-all: does [
     foreach f valid-funcs [
-        dest: make-dir to-file rejoin compose [(replace x: trim/with mold options/1 "-l" x f) '- options/2] 
+        dest: make-dir to-file rejoin [f '- options/2] 
         gather-function-names get-help-text :f 
         write-help reduce options/2
     ]
 ]
 
 do-one: does [
-    dest: make-dir to-file rejoin compose [(replace mold options/1 "!" "s") '- options/2] 
+    dest: make-dir to-file rejoin [options/1 '- options/2] 
     gather-function-names get-help-text :options/1
     write-help reduce options/2
 ]
