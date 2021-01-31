@@ -1,30 +1,22 @@
-Red [
-    Title:   ["Help Writer"]
-    Author:  ["Joey Jo-Jo Jr. Shabadoo"]
-    File:    %help-writer.red
-    License: 'MIT
-    Usage: {
-        /red help-writer.red function! asciidoc
-        /red help-writer.red native! markdown
-        /red help-writer.red -a markdown
-    }
-]
+Red []
 
-#include %/home/gt/Desktop/Help-Writer/help.red       ;  to compile
+; #include %/<your-path/help.red       ;  to compile
 
-opts: to block! trim/with system/script/args #"'"  ; multiple args are a weird string format, we need words in a block
+usage: ["Usage:" crlf "./help-writer <function> <template>" crlf "./help-writer -a , --all <template>"]
 
-; for command-line input validation - used in main
-; ----------------------------------------------------------------------------------------------------------------------
-valid-func: [action! function! native! op! routine!]
-valid-template: [asciidoc markdown latex]
-usage: ["Usage: ./help-writer <function> <template>"]
-all-usage: ["Usage: ./help-writer -a <template>"]
+args: system/script/args 
+options: to block! trim/with args #"'" 
 
-contains?: func [thing [block!] value [word!]][
-    either find thing value [true][false]
-]
-;---------------------------------------------------------------------------------------------------------------------------
+valid-funcs: [action! function! native! op! routine!]
+
+function-name-rule: ["action!" | "function!" | "native!" | "op!" | "routine!"]
+options-rule: ["-a" | "--all"]
+template-rule: ["asciidoc" | "markdown" | "latex"] 
+
+; templates
+asciidoc: ["===" space n crlf "[source, red]" crlf "----" crlf help-string (to-word :n) crlf "----"]
+latex:    ["\documentclass {article} \title{" n "} \begin{document}" help-string (to-word :n) "\end{document}"]
+markdown: ["###" space n crlf "```red" crlf help-string (to-word :n) crlf "```"]
 
 get-help-text: func [w][help-string :w]
 
@@ -34,11 +26,6 @@ gather-function-names: func [txt] [
     rule: [s: collect into fnames any [ahead [any ws "=>" e:] b: keep (copy/part s b) :e | ws s: | skip]] ; rule by toomasv
     parse txt rule  ; grab all function names and put them in fnames block to loop through
 ]
-
-; templates
-asciidoc: ["===" space n crlf "[source, red]" crlf "----" crlf help-string (to-word :n) crlf "----"]
-markdown: ["###" space n crlf "```red" crlf help-string (to-word :n) crlf "```"]
-latex:    ["\documentclass {article} \title{" n "} \begin{document}" help-string (to-word :n) "\end{document}"]
 
 write-help: func [template [block!] /local ext][
     ext: case [
@@ -50,36 +37,30 @@ write-help: func [template [block!] /local ext][
         either system/platform = 'Windows [  ; windows doesn't like * or ? in dir names
             f: copy n
             parse f [some [change #"?" "_q" | change #"*" "_asx" | skip]] 
-            either f = "is" [continue][write to-file rejoin [dest f ext] rejoin compose template] 
+            either f = "is" [continue][write to-file rejoin [dest f ext] rejoin compose template] ; can't write 'is'
         ][
             either n = "is" [continue][write to-file rejoin [dest n ext] rejoin compose template]
         ]
     ]
 ]
 
-main-all: does [
-    either all [contains? valid-template opts/2 2 = length? opts][
-        foreach f valid-func [
-            gather-function-names get-help-text :f 
-            ; remove -a from opts/1, replace it with function category 
-            dest: make-dir to-file rejoin compose [(replace mold opts/1 "-a" f) '- opts/2] 
-            write-help reduce opts/2
-        ]
-    ][print all-usage exit]
-]
-
-main: does [
-    either opts/1 = '-a [main-all][
-    either all [
-                contains? valid-func opts/1 
-                contains? valid-template opts/2
-                2 = length? opts
-                ][
-                    gather-function-names get-help-text :opts/1
-                    ; remove ! from any-function word, pluralize it with 's', combine with template word to create dir name
-                    dest: make-dir to-file rejoin compose [(replace mold opts/1 "!" "s") '- opts/2] 
-                    write-help reduce opts/2][print usage exit]
+do-all: does [
+    foreach f valid-funcs [
+        dest: make-dir to-file rejoin compose [(replace mold options/1 "-a" f) '- options/2] ; fix for --all
+        gather-function-names get-help-text :f 
+        write-help reduce options/2
     ]
 ]
 
-main 
+do-one: does [
+    dest: make-dir to-file rejoin compose [(replace mold options/1 "!" "s") '- options/2] 
+    gather-function-names get-help-text :options/1
+    write-help reduce options/2
+]
+
+main: does [
+    unless parse args [any options-rule skip some template-rule (do-all) 
+                | some function-name-rule skip some template-rule (do-one)][print usage]
+]
+
+main
