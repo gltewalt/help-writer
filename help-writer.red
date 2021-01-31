@@ -17,7 +17,7 @@ opts: to block! trim/with system/script/args #"'"  ; multiple args are a weird s
 ; for command-line input validation - used in main
 ; ----------------------------------------------------------------------------------------------------------------------
 valid-func: [action! function! native! op! routine!]
-valid-template: [asciidoc markdown html]
+valid-template: [asciidoc markdown latex]
 usage: ["Usage: ./help-writer <function> <template>"]
 all-usage: ["Usage: ./help-writer -a <template>"]
 
@@ -38,13 +38,13 @@ gather-function-names: func [txt] [
 ; templates
 asciidoc: ["===" space n crlf "[source, red]" crlf "----" crlf help-string (to-word :n) crlf "----"]
 markdown: ["###" space n crlf "```red" crlf help-string (to-word :n) crlf "```"]
-html:     [] 
+latex:    ["\documentclass {article} \title{" n "} \begin{document}" help-string (to-word :n) "\end{document}"]
 
 write-help: func [template [block!] /local ext][
     ext: case [
         template = asciidoc ['.adoc]
         template = markdown ['.md]
-        template = html     ['.html]
+        template = latex    ['.tex]
     ]
     foreach n fnames [
         either system/platform = 'Windows [  ; windows doesn't like * or ? in dir names
