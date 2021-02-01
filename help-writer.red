@@ -29,8 +29,6 @@ gather-function-names: func [txt] [
     parse txt rule  ; grab all function names and put them in fnames block to loop through
 ]
 
-get-help-text: func [w][help-string :w]
-
 make-dir-name: func [w [word!] parse-rule [block!] /local o][
     o: mold w
     parse o parse-rule
@@ -44,12 +42,12 @@ write-help: func [template [block!] /local ext][
         template = latex    ['.tex]
     ]
     foreach n fnames [
-        either system/platform = 'Windows [  ; windows doesn't like * or ? in names
+        either system/platform = 'Windows [  ; windows doesn't like * or ? in file names
             f: copy n
-            parse f [some [change #"?" "_q" | change #"*" "_asx" | skip]] 
-            either f = "is" [continue][write to-file rejoin [dest f ext] rejoin compose template] ; can't write 'is'
+            parse f [some [change #"?" "_q" | change #"*" "_asx" | skip]]                        
+            either f = "is" [continue][write to-file rejoin [dest f ext] rejoin compose template]  
         ][
-            either n = "is" [continue][write to-file rejoin [dest n ext] rejoin compose template]
+            either n = "is" [continue][write to-file rejoin [dest n ext] rejoin compose template] ; can't write 'is'
         ]
     ]
 ]
@@ -57,14 +55,14 @@ write-help: func [template [block!] /local ext][
 do-all: does [
     foreach f valid-funcs [
         make-dir-name f pluralize-dir
-        gather-function-names get-help-text :f 
+        gather-function-names help-string :f 
         write-help reduce options/2
     ]
 ]
 
 do-one: does [
     make-dir-name options/1 pluralize-dir
-    gather-function-names get-help-text :options/1
+    gather-function-names help-string :options/1
     write-help reduce options/2
 ]
 
