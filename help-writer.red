@@ -14,6 +14,7 @@ valid-funcs: [action! function! native! op! routine!]
 
 function-name-rule: ["action!" | "function!" | "native!" | "op!" | "routine!"]
 options-rule: ["-a" | "--all"]
+pluralize-dir: [some [change #"!" #"s" | skip]]
 template-rule: ["asciidoc" | "markdown" | "latex"] 
 
 ; templates
@@ -29,6 +30,12 @@ gather-function-names: func [txt] [
 ]
 
 get-help-text: func [w][help-string :w]
+
+make-dir-name: func [w [word!] parse-rule [block!] /local o][
+    o: mold w
+    parse o parse-rule
+    dest: make-dir to-file rejoin [o '- options/2]
+]
 
 write-help: func [template [block!] /local ext][
     ext: case [
@@ -49,14 +56,14 @@ write-help: func [template [block!] /local ext][
 
 do-all: does [
     foreach f valid-funcs [
-        dest: make-dir to-file rejoin [f '- options/2] 
+        make-dir-name f pluralize-dir
         gather-function-names get-help-text :f 
         write-help reduce options/2
     ]
 ]
 
 do-one: does [
-    dest: make-dir to-file rejoin [options/1 '- options/2] 
+    make-dir-name options/1 pluralize-dir
     gather-function-names get-help-text :options/1
     write-help reduce options/2
 ]
