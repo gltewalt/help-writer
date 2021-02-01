@@ -25,3 +25,12 @@ From the Red language help system.
 
 ./help-writer -a, --all markdown
 ```
+
+----
+![command line](screen1.png)
+
+----
+![folders](screen2.png)
+
+----
+![files](screen3.png)
