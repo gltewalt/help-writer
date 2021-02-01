@@ -13,7 +13,7 @@ From the Red language help system.
 
 ./red help-writer.red action! markdown
 
-./red help-writer.red -a markdown
+./red help-writer.red -a, --all markdown
 ```
 
 * Compiled 
@@ -21,5 +21,5 @@ From the Red language help system.
 ```
 ./help-writer native! asciidoc
 
-./help-writer -a markdown
+./help-writer -a, --all markdown
 ```
