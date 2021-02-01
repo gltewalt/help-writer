@@ -12,10 +12,10 @@ args: system/script/args
 options: to block! trim/with args #"'" 
 valid-funcs: [action! function! native! op! routine!]
 
+options-rule:       ["-a" | "--all"]
+template-rule:      ["asciidoc" | "markdown" | "latex"] 
 function-name-rule: ["action!" | "function!" | "native!" | "op!" | "routine!"]
-options-rule: ["-a" | "--all"]
-pluralize-dir: [some [change #"!" #"s" | skip]]
-template-rule: ["asciidoc" | "markdown" | "latex"] 
+pluralize-dir-rule: [some [change #"!" #"s" | skip]]
 
 ; templates
 asciidoc: ["===" space n crlf "[source, red]" crlf "----" crlf help-string (to-word :n) crlf "----"]
@@ -42,26 +42,22 @@ write-help: func [template [block!] /local ext][
         template = latex    ['.tex]
     ]
     foreach n fnames [
-        either system/platform = 'Windows [  ; windows doesn't like * or ? in file names
-            f: copy n
-            parse f [some [change #"?" "_q" | change #"*" "_asx" | skip]]                        
-            either f = "is" [continue][write to-file rejoin [dest f ext] rejoin compose template]  
-        ][
-            either n = "is" [continue][write to-file rejoin [dest n ext] rejoin compose template] ; can't write 'is'
-        ]
+        f: copy n
+        parse f [some [change #"?" "_question_" | change #"*" "_asterisk_" | skip]]                        
+        either f = "is" [continue][write to-file rejoin [dest f ext] rejoin compose template]  
     ]
 ]
 
 do-all: does [
     foreach f valid-funcs [
-        make-dir-name f pluralize-dir
+        make-dir-name f pluralize-dir-rule
         gather-function-names help-string :f 
         write-help reduce options/2
     ]
 ]
 
 do-one: does [
-    make-dir-name options/1 pluralize-dir
+    make-dir-name options/1 pluralize-dir-rule
     gather-function-names help-string :options/1
     write-help reduce options/2
 ]
