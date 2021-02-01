@@ -1,6 +1,6 @@
 # Help-Writer
 
-Writes help-string content for different function types to asciidoc, markdown, or html files.
+Writes help-string content for different function types to asciidoc, markdown, or LaTex files.
 
 From the Red language help system.
 
