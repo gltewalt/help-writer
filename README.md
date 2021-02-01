@@ -1,4 +1,4 @@
-# Help-Writer
+# help-writer
 
 Writes help-string content for different function types to asciidoc, markdown, or LaTex files.
 
