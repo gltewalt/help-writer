@@ -1,6 +1,6 @@
 Red [
     Author: ["Greg Tewalt"]
-    Script: %help-writer.red
+    File: %help-writer.red
     Tabs: 4
 ]
 
