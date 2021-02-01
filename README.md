@@ -1,3 +1,5 @@
+![writer](writer.png) 
+
 # help-writer
 
 Writes help-string content for `any-function!` types to asciidoc, markdown, or LaTex files.
