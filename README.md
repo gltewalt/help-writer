@@ -1,4 +1,4 @@
-![writer](writer.png) 
+![writer](assets/writer.png) 
 
 # help-writer
 
@@ -29,10 +29,10 @@ From the Red language help system.
 ```
 
 ----
-![command line](screen1.png)
+![command line](assets/screen1.png)
 
 ----
-![folders](screen2.png)
+![folders](assets/screen2.png)
 
 ----
-![files](screen3.png)
+![files](assets/screen3.png)
