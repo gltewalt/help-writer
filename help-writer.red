@@ -10,7 +10,7 @@ usage: ["Usage:" crlf "./help-writer <function> <template>" crlf "./help-writer 
 
 args: system/script/args 
 options: to block! trim/with args #"'" 
-valid-funcs: [action! function! native! op! routine!]
+valid-func-types: [action! function! native! op! routine!]
 
 options-rule:       ["-a" | "--all"]
 template-rule:      ["asciidoc" | "markdown" | "latex"] 
@@ -49,9 +49,9 @@ write-help: func [template [block!] /local ext][
 ]
 
 do-all: does [
-    foreach f valid-funcs [
-        make-dir-name f pluralize-dir-rule
-        gather-function-names help-string :f 
+    foreach type-name valid-func-types [
+        make-dir-name type-name pluralize-dir-rule
+        gather-function-names help-string :type-name
         write-help reduce options/2
     ]
 ]
