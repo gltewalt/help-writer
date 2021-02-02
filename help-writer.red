@@ -44,7 +44,7 @@ write-help: func [template [block!] /local ext][
     foreach n fnames [
         f: copy n
         parse f [some [change #"?" "_question_" | change #"*" "_asterisk_" | skip]]                        
-        either f = "is" [continue][write to-file rejoin [dest f ext] rejoin compose template]  
+        either f = "is" [continue][write to-file rejoin [dest f ext] rejoin compose template]  ; can't write 'is' to file
     ]
 ]
 
