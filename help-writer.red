@@ -8,8 +8,9 @@ Red [
 
 usage: ["Usage:" crlf "./help-writer <function> <template>" crlf "./help-writer -a , --all <template>"]
 
-args: system/script/args 
-options: to block! trim/with args #"'" 
+args: system/script/args    ; to parse one string for command-line options like "--all asciidoc"
+options: to block! trim/with args #"'"  ; system/option/args is a block of strings - want words
+options2: system/options/args
 valid-func-types: [action! function! native! op! routine!]
 
 options-rule:       ["-a" | "--all"]
