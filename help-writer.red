@@ -25,7 +25,6 @@ markdown: ["###" space n crlf "```red" crlf help-string (to-word :n) crlf "```"]
 html: [{
     <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>} n {</title>
     <style>
-    html{font-family:times;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}
     h3 {font-family:"Times New Roman",times;font-weight:300;font-style:normal;color:#ba3925}
     code{font-family:"Times New Roman",monospace;font-weight:400;color:rgba(0,0,0,.9)}
     pre{color:rgba(0,0,0,.9);font-family:"Times New Roman",monospace;line-height:1.45;text-rendering:optimizeSpeed}
