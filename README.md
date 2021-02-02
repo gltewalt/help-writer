@@ -2,7 +2,7 @@
 
 # help-writer
 
-Writes help-string content for `any-function!` types to asciidoc, markdown, or LaTex files.
+Writes help-string content for `any-function!` types to Asciidoc, Markdown, or LaTex files.
 
 From the Red language help system.
 
