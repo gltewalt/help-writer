@@ -13,7 +13,7 @@ options: to block! trim/with args #"'"  ; system/option/args is a block of strin
 valid-func-types: [action! function! native! op! routine!]
 
 options-rule:       ["-a" | "--all"]
-template-rule:      ["asciidoc" | "markdown" | "latex"] 
+template-rule:      ["asciidoc" | "markdown" | "latex" | "html"] 
 function-name-rule: ["action!" | "function!" | "native!" | "op!" | "routine!"]
 pluralize-dir-rule: [some [change #"!" #"s" | skip]]
 
@@ -21,6 +21,17 @@ pluralize-dir-rule: [some [change #"!" #"s" | skip]]
 asciidoc: ["===" space n crlf "[source, red]" crlf "----" crlf help-string (to-word :n) crlf "----"]
 latex:    ["\documentclass {article} \title{" n "} \begin{document}" help-string (to-word :n) "\end{document}"]
 markdown: ["###" space n crlf "```red" crlf help-string (to-word :n) crlf "```"]
+
+html: [{
+    <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>} n {</title>
+    <style>
+    html{font-family:times;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}
+    h3 {font-family:"Times New Roman",times;font-weight:300;font-style:normal;color:#ba3925}
+    code{font-family:"Times New Roman",monospace;font-weight:400;color:rgba(0,0,0,.9)}
+    pre{color:rgba(0,0,0,.9);font-family:"Times New Roman",monospace;line-height:1.45;text-rendering:optimizeSpeed}
+    </style>
+    </head><body><h3 id="">} n {</h3><pre><code>} help-string (to-word :n) {</code></pre></body></html>}]
+
 
 gather-function-names: func [txt] [
     ws: charset reduce [space tab cr lf]
@@ -38,6 +49,7 @@ make-dir-name: func [w [word!] parse-rule [block!] /local o][
 write-help: func [template [block!] /local ext][
     ext: case [
         template = asciidoc ['.adoc]
+        template = html     ['.html]
         template = markdown ['.md]
         template = latex    ['.tex]
     ]
