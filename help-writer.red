@@ -37,6 +37,7 @@ html: [{
     <div><pre><code data-lang="red"><pre>} help-string (to-word :n) {</code></pre></div>
     </body>
     </html>}]
+    
 gather-function-names: func [txt] [
     ws: charset reduce [space tab cr lf]
     fnames: copy []
