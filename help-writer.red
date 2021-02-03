@@ -17,21 +17,26 @@ template-rule:      ["asciidoc" | "markdown" | "latex" | "html"]
 function-name-rule: ["action!" | "function!" | "native!" | "op!" | "routine!"]
 pluralize-dir-rule: [some [change #"!" #"s" | skip]]
 
-; templates
+; templates - move them to their own file?
 asciidoc: ["===" space n crlf "[source, red]" crlf "----" crlf help-string (to-word :n) crlf "----"]
 latex:    ["\documentclass {article} \title{" n "} \begin{document}" help-string (to-word :n) "\end{document}"]
 markdown: ["###" space n crlf "```red" crlf help-string (to-word :n) crlf "```"]
 
 html: [{
-    <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>} n {</title>
+    <!DOCTYPE html><html lang="en">
+    <head>
+    <meta charset="UTF-8"><title>} n {</title>
     <style>
-    h3 {font-family:"Times New Roman",times;font-weight:300;font-style:normal;color:#ba3925}
-    code{font-family:"Times New Roman",monospace;font-weight:400;color:rgba(0,0,0,.9)}
-    pre{color:rgba(0,0,0,.9);font-family:"Times New Roman",monospace;line-height:1.45;text-rendering:optimizeSpeed}
+    h3 {font-family:"Times New Roman",times;font-weight:500;font-style:normal;color:#ba3925;}
+    div {background-color: #f5f5f0;}
+    code {font-family:"Times New Roman",monospace;font-weight:400;color:rgba(0,0,0,.9);}
+    pre {color:rgba(0,0,0,.9); font-family:"Times New Roman",monospace;line-height:1.45;text-rendering:optimizeSpeed;}
     </style>
-    </head><body><h3 id="">} n {</h3><pre><code>} help-string (to-word :n) {</code></pre></body></html>}]
-
-
+    </head>
+    <body><h3 id="">} n {</h3>
+    <div><pre><code data-lang="red"><pre>} help-string (to-word :n) {</code></pre></div>
+    </body>
+    </html>}]
 gather-function-names: func [txt] [
     ws: charset reduce [space tab cr lf]
     fnames: copy []
