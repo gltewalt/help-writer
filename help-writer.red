@@ -24,11 +24,11 @@ markdown: ["###" space n crlf "```red" crlf help-string (to-word :n) crlf "```"]
 
 html: [{<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>} n {</title>
     <style>
-    h2 {font-family:"Times New Roman",times;font-weight:500;font-style:normal;color:#ba3925;}
-    .content {background-color: #f5f5f0;border: 1px dotted black;padding-top: 25px;padding-right: 15px;padding-bottom: 15px;padding-left: 40px;}
-    .header { padding-top: 25px;padding-right: 15px;padding-bottom: 15px;padding-left: 40px;}
-    pre {color:rgba(0,0,0,.9); font-family:"Times New Roman";line-height:1.45;text-rendering:optimizeSpeed;}
-    code {font-family:"Times New Roman",monospace;font-weight:400;color:rgba(0,0,0,.9);}
+    h2 {font-family:"Times New Roman",times;font-weight:400;font-style:normal;color:#ba3925;}   
+    .content {border: 1px dotted black;padding-top: 15px;padding-bottom: 15px;padding-left: 40px;background-color: #ffffcc;}
+    .header { padding-top: 15px;padding-bottom: 15px;padding-right: 50px;padding-left: 50px;}
+    pre {color:rgba(0,0,0,.9); font-family:"Times New Roman";line-height:1.45;text-rendering:optimizeLegibility;}
+    code {font-family:"Times New Roman";font-weight:400;color:rgba(0,0,0,.9);}
     </style>
     </head><div class="header"><body><h2 id="">} n {</h2><div class="content"><pre><code><pre>} help-string (to-word :n) {</code></pre></div></div></body></html>}
 ]
