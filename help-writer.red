@@ -4,7 +4,7 @@ Red [
     Tabs: 4
 ]
 
-; #include %/<your-path/help.red       ;  to compile
+; #include %/<your-path-to>/help.red       ;  to compile
 
 usage: ["Usage:" crlf "./help-writer <function> <template>" crlf "./help-writer -a , --all <template>"]
 
@@ -15,24 +15,30 @@ valid-func-types: [action! function! native! op! routine!]
 options-rule:       ["-a" | "--all"]
 template-rule:      ["asciidoc" | "markdown" | "latex" | "html"] 
 function-name-rule: ["action!" | "function!" | "native!" | "op!" | "routine!"]
-pluralize-dir-rule: [some [change #"!" #"s" | skip]]
+pluralize:          [some [change #"!" #"s" | skip]]
 
-; templates - move them to their own file?
+; begin templates 
+; --------------------------------------------------------------------------------------------------------------------------
 asciidoc: ["===" space n crlf "[source, red]" crlf "----" crlf help-string (to-word :n) crlf "----"]
 latex:    ["\documentclass {article} \title{" n "} \begin{document}" help-string (to-word :n) "\end{document}"]
 markdown: ["###" space n crlf "```red" crlf help-string (to-word :n) crlf "```"]
 
-html: [{<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>} n {</title>
+html: [{
+    <!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8"><title>} n {</title>
     <style>
     h2 {font-family:"Times New Roman",times;font-weight:400;font-style:normal;color:#ba3925;}   
     .content {border: 1px dotted black;padding-top: 15px;padding-bottom: 15px;padding-left: 40px;background-color: #ffffcc;}
-    .header { padding-top: 15px;padding-bottom: 15px;padding-right: 50px;padding-left: 50px;}
+    .header {padding-top: 15px;padding-bottom: 15px;padding-right: 150px;padding-left: 150px;}
     pre {color:rgba(0,0,0,.9); font-family:"Times New Roman";line-height:1.45;text-rendering:optimizeLegibility;}
     code {font-family:"Times New Roman";font-weight:400;color:rgba(0,0,0,.9);}
     </style>
-    </head><div class="header"><body><h2 id="">} n {</h2><div class="content"><pre><code><pre>} help-string (to-word :n) {</code></pre></div></div></body></html>}
+    </head>
+    <div class="header"><body><h2 id="">} n {</h2>
+    <div class="content"><pre><code><pre>} help-string (to-word :n) {</code></pre></div></div></body></html>}
 ]
-    
+; ------------------------------------------------------------------------------------------------------------------------
+
 gather-function-names: func [txt] [
     ws: charset reduce [space tab cr lf]
     fnames: copy []
@@ -46,7 +52,7 @@ make-dir-name: func [w [word!] parse-rule [block!] /local o][
     dest: make-dir to-file rejoin [o '- options/2]
 ]
 
-write-help: func [template [block!] /local ext][
+write-help: func [template [block!] /local ext write-block][
     ext: case [
         template = asciidoc ['.adoc]
         template = html     ['.html]
@@ -62,15 +68,15 @@ write-help: func [template [block!] /local ext][
 
 do-all: does [
     foreach type-name valid-func-types [
-        make-dir-name type-name pluralize-dir-rule
+        make-dir-name type-name pluralize
         gather-function-names help-string :type-name
         write-help reduce options/2
     ]
 ]
 
 do-one: does [
-    make-dir-name options/1 pluralize-dir-rule
-    gather-function-names help-string :options/1
+    make-dir-name options/1 pluralize
+    gather-function-names help-string :options/1 
     write-help reduce options/2
 ]
 
