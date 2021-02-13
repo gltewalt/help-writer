@@ -2,9 +2,7 @@
 
 # help-writer
 
-Writes help-string content for `any-function!` types to Asciidoc, LaTex, Markdown, or HTML files.
-
-From the Red language help system.
+Writes interactive help content for `any-function!` types to HTML, Asciidoc, or Markdown files.
 
 ### Usage
 
