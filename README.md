@@ -1,4 +1,4 @@
-![writer](assets/writer.png) 
+![writer](assets/write.png) 
 
 # help-writer
 
