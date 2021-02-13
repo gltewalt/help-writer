@@ -20,7 +20,6 @@ pluralize:          [some [change #"!" #"s" | skip]]
 ; begin templates 
 ; --------------------------------------------------------------------------------------------------------------------------
 asciidoc: ["===" space n crlf "[source, red]" crlf "----" crlf help-string (to-word :n) crlf "----"]
-latex:    ["\documentclass {article} \title{" n "} \begin{document}" help-string (to-word :n) "\end{document}"]
 markdown: ["###" space n crlf "```red" crlf help-string (to-word :n) crlf "```"]
 
 html: [{
