@@ -2,7 +2,8 @@
 
 # help-writer
 
-Writes interactive help content for `any-function!` types to HTML, Asciidoc, or Markdown files.
+Writes interactive help content for `any-function!` types to HTML, Asciidoc, or Markdown files
+
 
 ### Usage
 

@@ -4,6 +4,10 @@ Red [
     Tabs: 4
 ]
 
+; TODO  -- single summary page for each function type like you get from typing help action! in the console
+; with function words turned into links
+
+
 ; #include %/<your-path-to>/help.red       ;  to compile
 
 usage: ["Usage:" crlf "./help-writer <function> <template>" crlf "./help-writer -a , --all <template>"]
@@ -51,12 +55,11 @@ make-dir-name: func [w [word!] parse-rule [block!] /local o][
     dest: make-dir to-file rejoin [o '- options/2]
 ]
 
-write-help: func [template [block!] /local ext write-block][
+write-help: func [template [block!] /local ext][
     ext: case [
         template = asciidoc ['.adoc]
         template = html     ['.html]
         template = markdown ['.md]
-        template = latex    ['.tex]
     ]
     foreach n fnames [
         f: copy n
