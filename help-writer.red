@@ -4,9 +4,8 @@ Red [
     Tabs: 4
 ]
 
-; TODO  -- single summary page for each function type like you get from typing help action! in the console
-; with function words turned into links
-
+; TODO:  Sort output that goes into summary files. Make links of each function word in summary files.
+; Refactor so it isn't as smelly or leaky
 
 ; #include %/<your-path-to>/help.red       ;  to compile
 
@@ -61,17 +60,35 @@ write-help: func [template [block!] /local ext][
         template = html     ['.html]
         template = markdown ['.md]
     ]
+
+   ; n: :options/1   ; E.g. help-string action!, n used for compose in template
+    ; write a summary listing as you would get from help action!, etc
+  ;   FIX ***********************
+
     foreach n fnames [
         f: copy n
-        parse f [some [change #"?" "_question_" | change #"*" "_asterisk_" | skip]]                        
+        parse f [some [change #"?" "_question_" | change #"*" "_asterisk_" | skip]]  
         either f = "is" [continue][write to-file rejoin [dest f ext] rejoin compose template]  ; can't write 'is' to file
     ]
+]
+
+write-summary: func [func-type [word!] template [block!] /local ext][
+        ext: case [
+            template = asciidoc ['.adoc]
+            template = html     ['.html]
+            template = markdown ['.md]
+        ]
+        n: func-type ; n used for compose in template
+        ; dirty and temporary way of making a filename like actions-summery
+        ; put dest in the block if you want summary files in the dir with the other files
+        write to-file replace rejoin [func-type "summary" ext] "!" "s-" rejoin compose template
 ]
 
 do-all: does [
     foreach type-name valid-func-types [
         make-dir-name type-name pluralize
         gather-function-names help-string :type-name
+        write-summary type-name reduce options/2
         write-help reduce options/2
     ]
 ]
@@ -79,6 +96,7 @@ do-all: does [
 do-one: does [
     make-dir-name options/1 pluralize
     gather-function-names help-string :options/1 
+    write-summary options/1 reduce options/2
     write-help reduce options/2
 ]
 
