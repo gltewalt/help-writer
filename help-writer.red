@@ -60,11 +60,6 @@ write-help: func [template [block!] /local ext][
         template = html     ['.html]
         template = markdown ['.md]
     ]
-
-   ; n: :options/1   ; E.g. help-string action!, n used for compose in template
-    ; write a summary listing as you would get from help action!, etc
-  ;   FIX ***********************
-
     foreach n fnames [
         f: copy n
         parse f [some [change #"?" "_question_" | change #"*" "_asterisk_" | skip]]  
