@@ -114,11 +114,6 @@ write-summary: func [func-type [word!] template [block!] /local ext][
         ]
 ]
 
-other-summary: has [/s] [
-    s: copy ""
-    foreach f sort fnames [append s rejoin [{<a href="./} f ext {">} f {</a><br>}]]
-]
-
 do-all: does [
     foreach type-name valid-func-types [
         make-dir-name type-name pluralize
