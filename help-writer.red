@@ -4,9 +4,6 @@ Red [
     Tabs: 4
 ]
 
-; TODO: Sort summary listing from 'help action!', address string length in the summary,
-; wrap function words in <a href="./func-name">func-name</a>
-
 ; #include %/<your-path-to>/help.red       ;  to compile
 
 usage: ["Usage:" crlf "./help-writer <function> <template>" crlf "./help-writer -a , --all <template>"]
