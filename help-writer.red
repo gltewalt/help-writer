@@ -4,8 +4,8 @@ Red [
     Tabs: 4
 ]
 
-; TODO:  Sort output that goes into summary files. Make links of each function word in summary files.
-; Refactor so it isn't as smelly or leaky
+; TODO: Sort summary listing from 'help action!', address string length in the summary,
+; wrap function words in <a href="./func-name">func-name</a>
 
 ; #include %/<your-path-to>/help.red       ;  to compile
 
@@ -21,9 +21,13 @@ function-name-rule: ["action!" | "function!" | "native!" | "op!" | "routine!"]
 pluralize:          [some [change #"!" #"s" | skip]]
 
 ; begin templates 
+; global variables way for now in summary templates... :-(
 ; --------------------------------------------------------------------------------------------------------------------------
 asciidoc: ["===" space n crlf "[source, red]" crlf "----" crlf help-string (to-word :n) crlf "----"]
+summary-asciidoc: ["===" space header space "values" crlf crlf output crlf]
+
 markdown: ["###" space n crlf "```red" crlf help-string (to-word :n) crlf "```"]
+summary-markdown: ["###" space header space "values" crlf crlf output crlf]
 
 html: [{
     <!DOCTYPE html><html lang="en"><head>
@@ -38,6 +42,24 @@ html: [{
     </head>
     <div class="header"><body><h2 id="">} n {</h2>
     <div class="content"><pre><code><pre>} help-string (to-word :n) {</code></pre></div></div></body></html>}
+]
+
+summary-html: [{
+    <!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8"><title>} title {</title>
+    <style>
+    h2 {font-family:"Times New Roman",times;font-weight:400;font-style:normal;color:#ba3925;}   
+    .content {border: 1px dotted black;padding-top: 15px;padding-bottom: 15px;padding-left: 40px;background-color: #ffffcc;}
+    .header {padding-top: 15px;padding-bottom: 15px;padding-right: 150px;padding-left: 150px;}
+    pre {color:rgba(0,0,0,.9); font-family:"Times New Roman";line-height:1.45;text-rendering:optimizeLegibility;}
+    code {font-family:"Times New Roman";font-weight:400;color:rgba(0,0,0,.9);}
+    </style>
+    </head>
+    <div class="header">
+    <body><body><h2 id="">} header { values</h2>
+    <div class="content"><pre><code><pre>} output {</code></pre></div></div>
+    </body>
+    </html>}
 ]
 ; ------------------------------------------------------------------------------------------------------------------------
 
@@ -73,10 +95,28 @@ write-summary: func [func-type [word!] template [block!] /local ext][
             template = html     ['.html]
             template = markdown ['.md]
         ]
-        n: func-type ; n used for compose in template
-        ; dirty and temporary way of making a filename like actions-summery
-        ; put dest in the block if you want summary files in the dir with the other files
-        write to-file replace rejoin [func-type "summary" ext] "!" "s-" rejoin compose template
+        output: copy ""
+        title: header: form func-type  ; not optimal... throwing global variables around :-(
+        foreach n sort fnames [
+            f: copy n
+            parse f [some [change #"?" "_question_" | change #"*" "_asterisk_" | skip]]  
+            append output rejoin case [
+                template = asciidoc [[{link:./} f ext {[} n {]} crlf crlf]]
+                template = markdown [[{[} n {](} f ext {)} crlf crlf]]
+                template = html     [[{<a href="./} f ext {">} n {</a><br>}]]
+            ]
+        ]
+        ; dirty and temporary way of making a filename like actions-summary
+        write to-file replace rejoin [dest func-type "summary" ext] "!" "s-" rejoin compose case [
+            template = asciidoc [summary-asciidoc]
+            template = markdown [summary-markdown]
+            template = html     [summary-html]
+        ]
+]
+
+other-summary: has [/s] [
+    s: copy ""
+    foreach f sort fnames [append s rejoin [{<a href="./} f ext {">} f {</a><br>}]]
 ]
 
 do-all: does [
