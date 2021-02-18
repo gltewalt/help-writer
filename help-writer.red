@@ -4,6 +4,10 @@ Red [
     Tabs: 4
 ]
 
+; TODO: Delete write-help and write-summary if --all of function! is chosen. 
+;       They end up being written into the functions folder.
+
+
 ; #include %/<your-path-to>/help.red       ;  to compile
 
 usage: ["Usage:" crlf "./help-writer <function> <template>" crlf "./help-writer -a , --all <template>"]
