@@ -10,7 +10,7 @@ usage: ["Usage:" crlf "./help-writer <function> <template>" crlf "./help-writer 
 
 args: system/script/args    ; to parse one string for command-line options like "--all asciidoc"
 options: to block! trim/with args #"'"  ; system/option/args is a block of strings - want words
-valid-func-types: [action! function! native! op! routine!]
+valid-function-types: [action! function! native! op! routine!]
 
 options-rule:       ["-a" | "--all"]
 template-rule:      ["asciidoc" | "markdown" | "latex" | "html"] 
@@ -18,7 +18,7 @@ function-name-rule: ["action!" | "function!" | "native!" | "op!" | "routine!"]
 pluralize:          [some [change #"!" #"s" | skip]]
 
 ; begin templates 
-; global variables way for now in summary templates... :-(
+; global variables way for now in summary templates... :-/
 ; --------------------------------------------------------------------------------------------------------------------------
 asciidoc: ["===" space n crlf "[source, red]" crlf "----" crlf help-string (to-word :n) crlf "----"]
 summary-asciidoc: ["===" space header space "values" crlf crlf output crlf]
@@ -61,10 +61,10 @@ summary-html: [{
 ; ------------------------------------------------------------------------------------------------------------------------
 
 gather-function-names: func [txt] [
+    function-names: copy []
     ws: charset reduce [space tab cr lf]
-    fnames: copy []
-    rule: [s: collect into fnames any [ahead [any ws "=>" e:] b: keep (copy/part s b) :e | ws s: | skip]] ; rule by toomasv
-    parse txt rule  ; grab all function names and put them in fnames block to loop through
+    rule: [s: collect into function-names any [ahead [any ws "=>" e:] b: keep (copy/part s b) :e | ws s: | skip]] ; rule by toomasv
+    parse txt rule  ; grab all function names and put them in function-names block to loop through
 ]
 
 make-dir-name: func [w [word!] parse-rule [block!] /local o][
@@ -79,7 +79,7 @@ write-help: func [template [block!] /local ext][
         template = html     ['.html]
         template = markdown ['.md]
     ]
-    foreach n fnames [
+    foreach n function-names [
         f: copy n
         parse f [some [change #"?" "_question_" | change #"*" "_asterisk_" | skip]]  
         either f = "is" [continue][write to-file rejoin [dest f ext] rejoin compose template]  ; can't write 'is' to file
@@ -93,8 +93,8 @@ write-summary: func [func-type [word!] template [block!] /local ext][
             template = markdown ['.md]
         ]
         output: copy ""
-        title: header: form func-type  ; not optimal... throwing global variables around :-(
-        foreach n sort fnames [
+        title: header: form func-type  
+        foreach n sort function-names [
             f: copy n
             parse f [some [change #"?" "_question_" | change #"*" "_asterisk_" | skip]]  
             append output rejoin case [
@@ -103,7 +103,6 @@ write-summary: func [func-type [word!] template [block!] /local ext][
                 template = html     [[{<a href="./} f ext {">} n {</a><br>}]]
             ]
         ]
-        ; dirty and temporary way of making a filename like actions-summary
         write to-file replace rejoin [dest func-type "summary" ext] "!" "s-" rejoin compose case [
             template = asciidoc [summary-asciidoc]
             template = markdown [summary-markdown]
@@ -112,7 +111,7 @@ write-summary: func [func-type [word!] template [block!] /local ext][
 ]
 
 do-all: does [
-    foreach type-name valid-func-types [
+    foreach type-name valid-function-types [
         make-dir-name type-name pluralize
         gather-function-names help-string :type-name
         write-summary type-name reduce options/2
@@ -128,8 +127,10 @@ do-one: does [
 ]
 
 main: does [
-    unless parse args [any options-rule skip some template-rule (do-all) 
-                | some function-name-rule skip some template-rule (do-one)][print usage]
+    unless parse args [
+        any options-rule skip some template-rule (do-all) 
+        | some function-name-rule skip some template-rule (do-one)
+    ][print usage]
 ]
 
 main
