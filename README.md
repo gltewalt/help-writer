@@ -18,24 +18,20 @@ Writes interactive help content for `any-function!` types to HTML, Asciidoc, or 
 
 ./red help-writer.red op! html
 ```
-
-* Compiled 
-
-```red
-./help-writer native! asciidoc
-
-./help-writer routine! latex
-
-./help-writer -a, --all markdown
-
-./help-writer op! html
-```
-
 ----
+
 ![command line](assets/screen1.png)
 
 ----
+
 ![folders](assets/screen2.png)
 
 ----
+
 ![files](assets/screen3.png)
+
+----
+
+**html ouput sample**
+
+![output](assets/html.png)
